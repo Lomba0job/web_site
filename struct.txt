@@ -1,0 +1,11 @@
+/var/www/html/
+    ├── index.html  (Your main website file)
+    ├── assets/  (All static assets)
+    │   ├── css/
+    │   ├── js/
+    │   │   └── main.js  (Contains your fetch code)
+    │   ├── img/
+    ├── backend/  (Node.js backend for uploads and version handling)
+        ├── backend.js
+        ├── uploads/  (This is where uploaded files like `software.zip` are stored)
+        └── version.json  (Stores version info, updated by Node.js)
