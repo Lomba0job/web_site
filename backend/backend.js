@@ -141,8 +141,8 @@ app.use('/downloads', express.static(path.join(__dirname, 'uploads')));
 
 // Leggi i certificati SSL
 const sslOptions = {
-    key: fs.readFileSync('/etc/ssl/private/your_certificate.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/your_certificate.crt')
+    key: fs.readFileSync('/etc/letsencrypt/live/mlombardi.ddns.net/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/mlombardi.ddns.net/fullchain.pem')
   };
   
   // Avvia il server HTTPS sulla porta 443
