@@ -137,6 +137,6 @@ app.get('/all-versions', (req, res) => {
 app.use('/downloads', express.static(path.join(__dirname, 'uploads')));
 
 // Start the server
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+app.listen(80, () => {
+    console.log('Server running on port 80');
 });
