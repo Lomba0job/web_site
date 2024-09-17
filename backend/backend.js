@@ -1,7 +1,10 @@
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
+
 const app = express();
 
 
@@ -136,7 +139,21 @@ app.get('/all-versions', (req, res) => {
 // Serve uploaded files
 app.use('/downloads', express.static(path.join(__dirname, 'uploads')));
 
-// Start the server
-app.listen(80, () => {
-    console.log('Server running on port 80');
-});
+// Leggi i certificati SSL
+const sslOptions = {
+    key: fs.readFileSync('/etc/ssl/private/your_certificate.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/your_certificate.crt')
+  };
+  
+  // Avvia il server HTTPS sulla porta 443
+  https.createServer(sslOptions, app).listen(443, () => {
+    console.log('Server HTTPS in ascolto sulla porta 443');
+  });
+  
+  // Server HTTP che reindirizza a HTTPS
+  http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  }).listen(80, () => {
+    console.log('Server HTTP in ascolto sulla porta 80 e reindirizza a HTTPS');
+  });
