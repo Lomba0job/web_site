@@ -4,38 +4,132 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-// Setup storage for file uploads
+
+// Middleware to parse form data (important for parsing non-file fields like 'version')
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Parses incoming JSON requests
+
+// Serve static files (HTML, CSS, JS, etc.)
+app.use(express.static(path.join(__dirname, '../'))); // Serving all static assets from the parent directory
+
+// Setup storage for file uploads, each file gets a unique name with version number
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, path.join(__dirname, 'uploads'));
     },
     filename: (req, file, cb) => {
-        cb(null, 'software.zip'); // Store the latest version as a fixed name
+        // Save the file with a temporary unique name
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage });
-
-// Serve the version info (you can use a database for this as well)
-let versionInfo = {
-    version: "2.5.2", // Initial version
-    link: "/downloads/software.zip"
-};
-
-// Endpoint to upload a new version
-app.post('/upload', upload.single('file'), (req, res) => {
-    // Update version info
-    versionInfo.version = req.body.version;
-    versionInfo.link = `/downloads/software.zip`;
-    
-    // Save the updated version info
-    fs.writeFileSync('./version.json', JSON.stringify(versionInfo, null, 2));
-    
-    res.send('File uploaded and version updated');
+const upload = multer({
+    storage,
+    limits: { fileSize: 104857600 } // Optional: File size limit (100MB)
 });
 
-// Endpoint to serve the download link and version number to the front end
+// Load version info from version.json
+let versionInfo = [];
+const versionFilePath = path.join(__dirname, 'version.json');
+
+// Function to load the version.json file
+function loadVersionInfo() {
+    try {
+        // Check if version.json exists
+        if (fs.existsSync(versionFilePath)) {
+            const data = fs.readFileSync(versionFilePath, 'utf-8');
+
+            // Handle empty or malformed version.json
+            if (data.trim() === '') {
+                console.log('version.json is empty. Initializing as an empty array.');
+                versionInfo = [];
+            } else {
+                versionInfo = JSON.parse(data);
+            }
+
+            // Ensure versionInfo is an array
+            if (!Array.isArray(versionInfo)) {
+                console.log('version.json does not contain an array. Reinitializing.');
+                versionInfo = [];
+            }
+        } else {
+            // If version.json doesn't exist, initialize it as an empty array
+            console.log('version.json not found, initializing as a new array.');
+            versionInfo = [];
+            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2)); // Create the file with an empty array
+        }
+    } catch (error) {
+        console.log('Error loading version.json:', error);
+        versionInfo = []; // In case of error, ensure versionInfo is initialized as an array
+
+        // Optionally, overwrite the file with an empty array if it's corrupted
+        fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2));
+    }
+}
+
+// Call the function to load version information at server start
+loadVersionInfo();
+app.post('/upload', upload.single('file'), (req, res) => {
+    const version = req.body.version;
+    if (!version) {
+        // Delete the uploaded file if version is missing
+        fs.unlinkSync(req.file.path);
+        return res.status(400).send('Version is required');
+    }
+
+    const newFilename = `software_v${version}.zip`;
+    const newPath = path.join(req.file.destination, newFilename);
+
+    // Check if file with the same version already exists
+    if (fs.existsSync(newPath)) {
+        // Delete the uploaded file to prevent accumulation of unused files
+        fs.unlinkSync(req.file.path);
+        return res.status(400).send('File with this version already exists. Please use a new version number.');
+    }
+
+    // Rename the file
+    fs.rename(req.file.path, newPath, (err) => {
+        if (err) {
+            console.error('Error renaming file:', err);
+            return res.status(500).send('Error processing file');
+        }
+
+        // Update versionInfo and write to version.json
+        const newVersion = {
+            version: version,
+            link: `/downloads/${newFilename}`,
+            date: new Date().toISOString()
+        };
+
+        versionInfo.push(newVersion);
+        console.log('Updated versionInfo array:', versionInfo);
+
+        // Write to version.json using absolute path
+        try {
+            console.log('Attempting to write to version.json...');
+            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2));
+            console.log('Successfully wrote to version.json');
+        } catch (writeError) {
+            console.error('Error writing to version.json:', writeError);
+            return res.status(500).send('Error saving version information');
+        }
+
+        res.send('File uploaded and version updated');
+    });
+});
+
+// Endpoint to get the latest version
 app.get('/version', (req, res) => {
+    if (versionInfo.length === 0) {
+        res.status(404).json({ message: 'No versions found' });
+    } else {
+        const latestVersion = versionInfo[versionInfo.length - 1];
+        res.json(latestVersion);
+    }
+});
+
+// Endpoint to get all versions
+app.get('/all-versions', (req, res) => {
     res.json(versionInfo);
 });
 
