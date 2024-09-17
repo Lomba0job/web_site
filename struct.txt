@@ -1,9 +1,11 @@
 /var/www/html/
     ├── index.html  (Your main website file)
+    ├── page_downlaod.html  (another web page)
     ├── assets/  (All static assets)
     │   ├── css/
     │   ├── js/
     │   │   └── main.js  (Contains your fetch code)
+    |   |   └── script.js 
     │   ├── img/
     ├── backend/  (Node.js backend for uploads and version handling)
         ├── backend.js

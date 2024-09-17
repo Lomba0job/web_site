@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!--========== BOX ICONS ==========-->
+        <link rel="shortcut icon" href="./assets/images/LOGO_NLV.ico" type="image/x-icon">
         <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
 
         <!--========== CSS ==========-->
@@ -109,7 +110,7 @@ These features make it ideal for verifying the arrangement and quantity of objec
                     </div>
 
                     <div class="services__content">
-                        <a href=""><img src="assets/img/panel.svg" alt="" class="menu__img2"></a>
+                        <a href=""><img src="assets/images/panel.svg" alt="" class="menu__img2"></a>
                         <h3 class="services__title">Simple Control Panel</h3>
                         <p class="services__description">Our user interface is very intuitive and simple to use</p>
                     </div>
@@ -126,20 +127,40 @@ These features make it ideal for verifying the arrangement and quantity of objec
             <section class="app section bd-container" id="menu">
                 <div class="app__container bd-grid">
                     <div class="app__data">
-                        <span class="section-subtitle app__initial">App</span>
-                        <h2 class="section-title app__initial">App is aviable</h2>
+                        <!-- <span class="section-subtitle">App</span> -->
+                        <h2 class="section-title app__initial">App is available</h2>
                         <p class="app__description">Find our application and download it, for any information or problem contact us.</p>
+                        
                         <div class="app__stores">
-                        <span class="section-subtitle app__initial">Version:  2.5.2</p> </span>
-                       
+                            <!-- This is the only location where the version is displayed -->
+                            <span class="section-subtitle app__initial">Version: <span id="version-number">Loading...</span></span>
+                        
+                            <!-- Optionally, add this script in your HTML file or include it in your external JS file (e.g., main.js) -->
+                            <script>
+                                // Fetch the version number from the backend
+                                fetch('/version')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Update the version number in the HTML
+                                        document.getElementById('version-number').textContent = data.version;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching version:', error);
+                                        document.getElementById('version-number').textContent = 'Error loading version';
+                                    });
+                            </script>
+                            
                         </div>
                         <div class="app__stores">
-                            <a href=""><img src="assets/images/win.svg" alt="" class="app__store"></a>
+                            <a href="/downloads/software.zip" download>
+                                <img src="assets/images/win.svg" alt="Download Windows Software" class="app__store">
+                            </a>
                             <!--<a href=""><img src="assets/img/mac.svg" alt="" class="app__store"></a>-->
-                            <a href=""><img src="assets/images/ubuntu.svg" alt="" class="app__store"></a>
+                            <!-- <a href=""><img src="assets/images/ubuntu.svg" alt="" class="app__store"></a> -->
                         </div>
+                        <a href="all_version.html" class="footer__link">Show all version</a>
                     </div>
-
+                
                     <img src="assets/images/APP.png" alt="" class="app__img">
                 </div>
             </section>
