@@ -152,20 +152,26 @@ These features make it ideal for verifying the arrangement and quantity of objec
                             
                         </div>
                         <div class="app__stores">
-                            <a  id="Downlaod">
-                                <img src="assets/images/win.svg" alt="Download Windows Software"  class="app__store">
+                            <a id="Download">
+                                <img src="assets/images/win.svg" alt="Download Windows Software" class="app__store">
                             </a>
                             <script>
-                                // Fetch the version number from the backend
-                                fetch('/versione')
+                                // Fetch the version number and link from the backend
+                                fetch('/version')
                                     .then(response => response.json())
                                     .then(data => {
-                                        // Update the version number in the HTML
-                                        document.getElementById('Downlaod').appendChild(data.link);
+                                        // Verifica se il link esiste
+                                        if (data.link) {
+                                            // Imposta il link nell'elemento <a> con id "Download"
+                                            document.getElementById('Download').setAttribute('href', data.link);
+                                        } else {
+                                            console.error('No link found in the response');
+                                            document.getElementById('Download').setAttribute('href', '#');
+                                        }
                                     })
                                     .catch(error => {
                                         console.error('Error fetching version:', error);
-                                        document.getElementById('Downlaod').appendChild("#");
+                                        document.getElementById('Download').setAttribute('href', '#');
                                     });
                             </script>
                             
