@@ -152,9 +152,23 @@ These features make it ideal for verifying the arrangement and quantity of objec
                             
                         </div>
                         <div class="app__stores">
-                            <a href="/downloads/software.zip" download>
-                                <img src="assets/images/win.svg" alt="Download Windows Software" class="app__store">
+                            <a  id="Downlaod">
+                                <img src="assets/images/win.svg" alt="Download Windows Software"  class="app__store">
                             </a>
+                            <script>
+                                // Fetch the version number from the backend
+                                fetch('/versione')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Update the version number in the HTML
+                                        document.getElementById('Downlaod').appendChild(data.link);
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching version:', error);
+                                        document.getElementById('Downlaod').appendChild("#");
+                                    });
+                            </script>
+                            
                             <!--<a href=""><img src="assets/img/mac.svg" alt="" class="app__store"></a>-->
                             <!-- <a href=""><img src="assets/images/ubuntu.svg" alt="" class="app__store"></a> -->
                         </div>
