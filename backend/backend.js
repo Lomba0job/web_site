@@ -7,7 +7,6 @@ const path = require('path');
 
 const app = express();
 
-
 // Middleware to parse form data (important for parsing non-file fields like 'version')
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Parses incoming JSON requests
@@ -63,15 +62,15 @@ function loadVersionInfo() {
         }
     } catch (error) {
         console.log('Error loading version.json:', error);
-        versionInfo = []; // In case of error, ensure versionInfo is initialized as an array
-
-        // Optionally, overwrite the file with an empty array if it's corrupted
-        fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2));
+        // In case of error, ensure versionInfo is initialized as an array
+        // Don't overwrite the file in case of an error.
+        return;
     }
 }
 
 // Call the function to load version information at server start
 loadVersionInfo();
+
 app.post('/upload', upload.single('file'), (req, res) => {
     const version = req.body.version;
     if (!version) {
@@ -110,8 +109,13 @@ app.post('/upload', upload.single('file'), (req, res) => {
         // Write to version.json using absolute path
         try {
             console.log('Attempting to write to version.json...');
-            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2));
-            console.log('Successfully wrote to version.json');
+            const newVersionInfo = JSON.stringify(versionInfo, null, 2);
+
+            // Only write to the file if there are actual changes
+            if (newVersionInfo !== fs.readFileSync(versionFilePath, 'utf-8')) {
+                fs.writeFileSync(versionFilePath, newVersionInfo);
+                console.log('Successfully wrote to version.json');
+            }
         } catch (writeError) {
             console.error('Error writing to version.json:', writeError);
             return res.status(500).send('Error saving version information');
@@ -139,21 +143,21 @@ app.get('/all-versions', (req, res) => {
 // Serve uploaded files
 app.use('/downloads', express.static(path.join(__dirname, 'uploads')));
 
-// Leggi i certificati SSL
+// Read SSL certificates
 const sslOptions = {
     key: fs.readFileSync('/home/lmb/ssl/privkey.pem'),
     cert: fs.readFileSync('/home/lmb/ssl/fullchain.pem')
-  };
-  
-  // Avvia il server HTTPS sulla porta 443
-  https.createServer(sslOptions, app).listen(443, () => {
+};
+
+// Start HTTPS server on port 443
+https.createServer(sslOptions, app).listen(443, () => {
     console.log('Server HTTPS in ascolto sulla porta 443');
-  });
-  
-  // Server HTTP che reindirizza a HTTPS
-  http.createServer((req, res) => {
+});
+
+// HTTP server to redirect to HTTPS
+http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
-  }).listen(80, () => {
+}).listen(80, () => {
     console.log('Server HTTP in ascolto sulla porta 80 e reindirizza a HTTPS');
-  });
+});
