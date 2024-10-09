@@ -40,14 +40,18 @@ router.post('/login', async (req, res) => {
     if (!user) {
         return res.status(400).send('Credenziali non valide');
     }
-    const match = await bcrypt.compare(password, user.password);
-    if (match) {
-        req.session.loggedIn = true;
-        req.session.username = username;
-        res.redirect('/upload');
-    } else {
-        res.status(400).send('Credenziali non valide');
-    }
+    const { authenticateUser } = require('./models/userModel');
+
+    exports.login = async (req, res) => {
+        const { username, password } = req.body;
+        const isAuthenticated = await authenticateUser(username, password);
+
+        if (isAuthenticated) {
+            res.send('Login successful');
+        } else {
+            res.status(401).send('Invalid username or password');
+        }
+    };
 });
 
 // Logout
