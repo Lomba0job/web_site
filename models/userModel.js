@@ -1,11 +1,11 @@
 /**
  * @file userModel.js
- * @description 
+ * @description Gestione utente con nome utente e password fissi
  * @author Lombardi Michele 
  * @copyright Nanolever 
  */
 
-// models/userModel.js
+
 const bcrypt = require('bcrypt');
 require('dotenv').config();  // Per caricare le variabili d'ambiente
 
@@ -36,5 +36,4 @@ addFixedUser();
 
 module.exports = {
     authenticateUser,
-    addUser: (user) => users.push(user)
 };
