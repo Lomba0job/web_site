@@ -454,6 +454,11 @@ img{
   margin-bottom: var(--mb-1);
 }
 
+.footer__link1{
+  color: var(--text-color);
+  margin-bottom: var(--mb-1);
+}
+
 .footer__link:hover{
   color: var(--first-color);
 }
