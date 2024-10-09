@@ -5,6 +5,7 @@
     <title>All Versions</title>
     <link rel="stylesheet" href="/assets/css/styles.css">
     <style>
+        /* Style per la pagina */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -14,7 +15,7 @@
             margin: auto;
         }
 
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #2c3e50;
         }
@@ -37,12 +38,12 @@
 
         .version-item a {
             text-decoration: none;
-            color: #000;
+            color: #3498db;
             font-weight: bold;
         }
 
         .version-item a:hover {
-            color: #000;
+            color: #2980b9;
         }
 
         .version-info {
@@ -66,36 +67,66 @@
             font-size: 1.2rem;
             color: #888;
         }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .tab.active {
+            background-color: #2980b9;
+        }
+
+        .tab:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
+
     <h1>All Versions</h1>
 
-    <!-- Sezioni per Software, Firmware e Tool -->
-    <section id="software-versions">
-        <h2>Software Versions</h2>
-        <ul class="version-list" id="software-version-list"></ul>
-    </section>
+    <!-- Tabs per selezionare il tipo -->
+    <div class="tabs">
+        <button class="tab active" onclick="loadVersions('software')">Software</button>
+        <button class="tab" onclick="loadVersions('firmware')">Firmware</button>
+        <button class="tab" onclick="loadVersions('tool')">Tool</button>
+    </div>
 
-    <section id="firmware-versions">
-        <h2>Firmware Versions</h2>
-        <ul class="version-list" id="firmware-version-list"></ul>
-    </section>
-
-    <section id="tool-versions">
-        <h2>Tool Versions</h2>
-        <ul class="version-list" id="tool-version-list"></ul>
-    </section>
+    <!-- Lista delle versioni -->
+    <ul class="version-list" id="version-list"></ul>
 
     <p id="emptyMessage" class="empty-message">No versions uploaded yet.</p>
 
     <script>
-        // Funzione per ottenere tutte le versioni per un tipo specifico
-        function fetchAllVersions(type) {
+        // Funzione per caricare le versioni a seconda del tipo selezionato
+        function loadVersions(type) {
+            // Resetta lo stato della pagina
+            document.getElementById('version-list').innerHTML = '';
+            document.getElementById('emptyMessage').style.display = 'block';
+
+            // Aggiusta le classi active dei pulsanti
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[onclick="loadVersions('${type}')"]`).classList.add('active');
+
+            // Fetch delle versioni dal server per il tipo selezionato
             fetch(`/${type}/all-versions`)
                 .then(response => response.json())
                 .then(data => {
-                    const versionList = document.getElementById(`${type}-version-list`);
+                    const versionList = document.getElementById('version-list');
                     const emptyMessage = document.getElementById('emptyMessage');
 
                     // Nascondi il messaggio se ci sono versioni
@@ -124,10 +155,9 @@
                 });
         }
 
-        // Richiama la funzione per software, firmware e tool
-        fetchAllVersions('software');
-        fetchAllVersions('firmware');
-        fetchAllVersions('tool');
+        // Carica le versioni del software al caricamento della pagina
+        loadVersions('software');
     </script>
+
 </body>
 </html>
