@@ -89,26 +89,33 @@ exports.uploadFile = (req, res, type) => {
 };
 
 exports.getLatestVersion = (req, res, type) => {
+    console.log(`Fetching last versions for: ${type}`);  // Log aggiunto
     const versionFilePath = path.join(__dirname, `../uploads/${type}/version.json`);
     if (!fs.existsSync(versionFilePath)) {
+        console.log(`No version.json file found for ${type}`);  // Log aggiunto
         return res.status(404).json({ message: 'Nessuna versione trovata' });
     }
     const data = fs.readFileSync(versionFilePath, 'utf-8');
     const versionInfo = data ? JSON.parse(data) : [];
     if (versionInfo.length === 0) {
+        console.log(`vuoto per ${type}`);  // Log aggiunto
         res.status(404).json({ message: 'Nessuna versione trovata' });
     } else {
         const latestVersion = versionInfo[versionInfo.length - 1];
+        console.log(`Version  for ${type}:`, latestVersion);  // Log aggiunto
         res.json(latestVersion);
     }
 };
 
 exports.getAllVersions = (req, res, type) => {
+    console.log(`Fetching all versions for: ${type}`);  // Log aggiunto
     const versionFilePath = path.join(__dirname, `../uploads/${type}/version.json`);
     if (!fs.existsSync(versionFilePath)) {
+        console.log(`No version.json file found for ${type}`);  // Log aggiunto
         return res.status(404).json({ message: 'Nessuna versione trovata' });
     }
     const data = fs.readFileSync(versionFilePath, 'utf-8');
     const versionInfo = data ? JSON.parse(data) : [];
+    console.log(`Version data for ${type}:`, versionInfo);  // Log aggiunto
     res.json(versionInfo);
 };
