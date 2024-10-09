@@ -173,7 +173,7 @@ These features make it ideal for verifying the arrangement and quantity of objec
         <script>
             function fetchVersionAndLink(type) {
                 fetch(`/${type}/version`)
-                    .then(response => response.json())
+                    .then(response => response.json()) // Parsing della risposta come JSON
                     .then(data => {
                         document.getElementById(`${type}-version`).textContent = data.version;
                         if (data.link) {
@@ -189,10 +189,6 @@ These features make it ideal for verifying the arrangement and quantity of objec
                         document.getElementById(`${type}-download`).setAttribute('href', '#');
                     });
             }
-        
-            fetchVersionAndLink('software');
-            fetchVersionAndLink('firmware');
-            fetchVersionAndLink('tool');
         </script>
     </section>
 

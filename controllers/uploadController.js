@@ -59,7 +59,7 @@ exports.uploadFile = (req, res, type) => {
                 console.error('Errore durante la rinomina del file:', err);
                 return res.status(500).send('Errore durante il processamento del file');
             }
-
+        
             // Aggiorna version.json
             const versionFilePath = path.join(req.file.destination, 'version.json');
             let versionInfo = [];
@@ -67,17 +67,22 @@ exports.uploadFile = (req, res, type) => {
                 const data = fs.readFileSync(versionFilePath, 'utf-8');
                 versionInfo = data ? JSON.parse(data) : [];
             }
-
+        
             const newVersion = {
                 version: version,
                 link: `/uploads/${type}/${newFilename}`,
                 date: new Date().toISOString()
             };
-
+        
             versionInfo.push(newVersion);
-
-            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2));
-
+        
+            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2), (writeErr) => {
+                if (writeErr) {
+                    console.error('Errore durante la scrittura di version.json:', writeErr);
+                    return res.status(500).send('Errore durante la scrittura del file version.json');
+                }
+            });
+        
             res.send('File caricato e versione aggiornata');
         });
     });
