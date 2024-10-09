@@ -16,8 +16,8 @@ router.post('/upload', authMiddleware, (req, res) => {
     uploadController.uploadFile(req, res, 'software');
 });
 
-router.get('/version', (req, res) => {
-    uploadController.getLatestVersion(req, res, 'software');
+router.get('/all-versions', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/all_version.html'));
 });
 
 router.get('/all-versions', (req, res) => {
