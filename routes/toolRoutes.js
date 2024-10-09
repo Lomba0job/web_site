@@ -31,6 +31,11 @@ router.get('/all-versions', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/all_version.html'));
 });
 
+// Rotta per caricare la pagina info.html
+router.get('/info', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/info_tool.html'));
+});
+
 // Serve i file scaricabili
 router.use('/downloads', express.static('uploads/tool'));
 
