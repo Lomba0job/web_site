@@ -10,6 +10,7 @@ const express = require('express');
 const router = express.Router();
 const uploadController = require('../controllers/uploadController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const path = require('path');
 
 // Rotte per il firmware
 router.post('/upload', authMiddleware, (req, res) => {
