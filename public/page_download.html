@@ -123,59 +123,66 @@ These features make it ideal for verifying the arrangement and quantity of objec
                 </div>
             </section>
 
-                
+            
+            
     <!--===== APP =======-->
-    <section class="downloads section bd-container" id="downloads">
-        <div class="downloads__container bd-grid">
-            <div class="downloads__data">
-                <h2 class="section-title downloads__initial">Downloads Available</h2>
-                <p class="downloads__description">Find our applications and download them. For any information or issues, contact us.</p>
-    
+    <section class="app section bd-container" id="menu">
+        <div class="app__container bd-grid">
+            <div class="app__data">
+                <h2 class="section-title app__initial">Downloads Available</h2>
+                <p class="app__description">Find our applications and download them. For any information or issues, contact us.</p>
+            
                 <!-- Software Download -->
                 <div class="download-section">
                     <h3>Software</h3>
-                    <span class="section-subtitle downloads__initial">Version: <span id="software-version">Loading...</span></span>
-                    <div class="downloads__stores">
+                    <span class="section-subtitle app__initial">Version: <span id="software-version">Loading...</span></span>
+                    <div class="app__stores">
                         <a id="software-download">
-                            <img src="assets/images/win.svg" alt="Download Windows Software" class="downloads__store">
+                            <img src="assets/images/win.svg" alt="Download Windows Software" class="app__store">
                         </a>
-                        <a href="/software/all-versions" class="footer__link">Show all software versions</a>
+                        <a href="/software/all-versions?type=software" class="footer__link">Show all software versions</a>
                     </div>
                 </div>
-    
+            </section>
+            
                 <!-- Firmware Download -->
                 <div class="download-section">
                     <h3>Firmware</h3>
-                    <span class="section-subtitle downloads__initial">Version: <span id="firmware-version">Loading...</span></span>
-                    <div class="downloads__stores">
+                    <span class="section-subtitle app__initial">Version: <span id="firmware-version">Loading...</span></span>
+                    <div class="app__stores">
                         <a id="firmware-download">
-                            <img src="assets/images/ubuntu.svg" alt="Download Firmware" class="downloads__store">
+                            <img src="assets/images/firmware.svg" alt="Download Firmware" class="app__store">
                         </a>
-                        <a href="/firmware/all-versions" class="footer__link">Show all firmware versions</a>
+                        <a href="/firmware/all-versions?type=firmware" class="footer__link">Show all firmware versions</a>
                     </div>
                 </div>
-    
+            
                 <!-- Tool Download -->
                 <div class="download-section">
                     <h3>Tool</h3>
-                    <span class="section-subtitle downloads__initial">Version: <span id="tool-version">Loading...</span></span>
-                    <div class="downloads__stores">
+                    <span class="section-subtitle app__initial">Version: <span id="tool-version">Loading...</span></span>
+                    <div class="app__stores">
                         <a id="tool-download">
-                            <img src="assets/images/mac.svg" alt="Download Tool" class="downloads__store">
+                            <img src="assets/images/tool.svg" alt="Download Tool" class="app__store">
                         </a>
-                        <a href="/tool/all-versions" class="footer__link">Show all tool versions</a>
+                        <a href="/tool/all-versions?type=tool" class="footer__link">Show all tool versions</a>
                     </div>
                 </div>
+            
+                <!-- Link per visualizzare tutte le versioni -->
+               
             </div>
-    
-            <img src="assets/images/APP.png" alt="" class="downloads__img">
         </div>
         <script>
+            // Funzione per ottenere la versione e il link di download
             function fetchVersionAndLink(type) {
                 fetch(`/${type}/version`)
-                    .then(response => response.json()) // Parsing della risposta come JSON
+                    .then(response => response.json())
                     .then(data => {
+                        // Aggiorna il numero di versione
                         document.getElementById(`${type}-version`).textContent = data.version;
+        
+                        // Imposta il link di download
                         if (data.link) {
                             document.getElementById(`${type}-download`).setAttribute('href', data.link);
                         } else {
@@ -189,6 +196,11 @@ These features make it ideal for verifying the arrangement and quantity of objec
                         document.getElementById(`${type}-download`).setAttribute('href', '#');
                     });
             }
+        
+            // Richiama la funzione per software, firmware e tool
+            fetchVersionAndLink('software');
+            fetchVersionAndLink('firmware');
+            fetchVersionAndLink('tool');
         </script>
     </section>
 
