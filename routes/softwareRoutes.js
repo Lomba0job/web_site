@@ -22,7 +22,7 @@ router.get('/versions', (req, res) => {
 });
 
 // Rotta per ottenere i dati delle versioni in formato JSON (API)
-router.get('/api/all-versions', authMiddleware, (req, res) => {
+router.get('/api/all-versions', (req, res) => {
     uploadController.getAllVersions(req, res, 'tool');
 });
 

@@ -174,14 +174,20 @@ These features make it ideal for verifying the arrangement and quantity of objec
             </div>
         </div>
         <script>
-            // Funzione per ottenere la versione e il link di download
             function fetchVersionAndLink(type) {
                 fetch(`/${type}/version`)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Errore nel recupero dei dati');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log(`Version data for ${type}:`, data);  // Aggiungi questo log per controllare i dati ricevuti
+                        
                         // Aggiorna il numero di versione
-                        document.getElementById(`${type}-version`).textContent = data.version;
-        
+                        document.getElementById(`${type}-version`).textContent = data.version || 'No version found';
+            
                         // Imposta il link di download
                         if (data.link) {
                             document.getElementById(`${type}-download`).setAttribute('href', data.link);

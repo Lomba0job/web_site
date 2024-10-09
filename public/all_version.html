@@ -130,8 +130,15 @@ function loadVersions(type) {
 
     // Fetch delle versioni dal server per il tipo selezionato
     fetch(`/api/${type}/all-versions`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Errore nel recupero dei dati');
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log(`All versions data for ${type}:`, data);  // Aggiungi questo log per controllare i dati ricevuti
+
             const versionList = document.getElementById('version-list');
             const emptyMessage = document.getElementById('emptyMessage');
 
