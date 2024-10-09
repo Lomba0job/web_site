@@ -2,16 +2,36 @@
   {
     "version": "1.1.0",
     "link": "/uploads/software/software_v1.1.0.zip",
-    "date": "2024-10-09T11:54:59.279Z"
+    "date": "2024-01-18T11:54:59.279Z"
   },
   {
-    "version": "2.4.1",
+    "version": "2.2.0",
+    "link": "/uploads/software/software_v2.2.0.zip",
+    "date": "2024-02-22T11:54:59.279Z"
+  },
+  {
+    "version": "2.3.1",
+    "link": "/uploads/software/software_v2.3.1.zip",
+    "date": "2024-02-28T11:54:59.279Z"
+  },
+  {
+    "version": "2.4.0",
     "link": "/uploads/software/software_v2.4.1.zip",
-    "date": "2024-10-09T14:02:54.427Z"
+    "date": "2024-09-04T14:02:54.427Z"
+  },
+  {
+    "version": "2.5.0",
+    "link": "/uploads/software/software_v2.5.0.zip",
+    "date": "2024-10-05T14:02:54.427Z"
   },
   {
     "version": "2.5.1",
     "link": "/uploads/software/software_v2.5.1.zip",
-    "date": "2024-10-09T14:02:59.165Z"
+    "date": "2024-11-04T14:02:54.427Z"
+  },
+  {
+    "version": "2.5.2",
+    "link": "/uploads/software/software_v2.5.2.zip",
+    "date": "2024-12-09T14:02:59.165Z"
   }
 ]
