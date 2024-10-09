@@ -18,12 +18,12 @@ router.post('/upload', authMiddleware, (req, res) => {
 });
 
 router.get('/version', (req, res) => {
-    uploadController.getAllVersions(req, res, 'software');
+    uploadController.getLatestVersion(req, res, 'software');
 });
 
 // Rotta per ottenere i dati delle versioni in formato JSON (API)
 router.get('/api/all-versions', (req, res) => {
-    uploadController.getAllVersions(req, res, 'tool');
+    uploadController.getAllVersions(req, res, 'software');
 });
 
 // Rotta per caricare la pagina all_version.html
