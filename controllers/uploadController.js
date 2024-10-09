@@ -33,8 +33,8 @@ exports.uploadFile = (req, res, type) => {
 
     upload(req, res, (err) => {
         if (err) {
-            console.error('Errore durante l\'upload:', err);
-            return res.status(500).send('Errore durante l\'upload del file');
+            console.error('Errore durante upload:', err);
+            return res.status(500).send('Errore durante lupload del file');
         }
 
         // Verifica che il file e la versione siano presenti
@@ -76,14 +76,14 @@ exports.uploadFile = (req, res, type) => {
         
             versionInfo.push(newVersion);
         
-            fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2), (writeErr) => {
+            fs.writeFile(versionFilePath, JSON.stringify(versionInfo, null, 2), (writeErr) => {
                 if (writeErr) {
                     console.error('Errore durante la scrittura di version.json:', writeErr);
                     return res.status(500).send('Errore durante la scrittura del file version.json');
+                } else {
+                    res.send('File caricato e versione aggiornata');
                 }
             });
-        
-            res.send('File caricato e versione aggiornata');
         });
     });
 };
