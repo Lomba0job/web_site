@@ -110,53 +110,60 @@
     <p id="emptyMessage" class="empty-message">No versions uploaded yet.</p>
 
     <script>
-        // Funzione per caricare le versioni a seconda del tipo selezionato
-        function loadVersions(type) {
-            // Resetta lo stato della pagina
-            document.getElementById('version-list').innerHTML = '';
-            document.getElementById('emptyMessage').style.display = 'block';
+       // Funzione per ottenere il parametro dalla query string
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
 
-            // Aggiusta le classi active dei pulsanti
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
+// Funzione per caricare le versioni a seconda del tipo selezionato
+function loadVersions(type) {
+    // Resetta lo stato della pagina
+    document.getElementById('version-list').innerHTML = '';
+    document.getElementById('emptyMessage').style.display = 'block';
+
+    // Aggiusta le classi active dei pulsanti
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[onclick="loadVersions('${type}')"]`).classList.add('active');
+
+    // Fetch delle versioni dal server per il tipo selezionato
+    fetch(`/api/${type}/all-versions`)
+        .then(response => response.json())
+        .then(data => {
+            const versionList = document.getElementById('version-list');
+            const emptyMessage = document.getElementById('emptyMessage');
+
+            // Nascondi il messaggio se ci sono versioni
+            if (data.length > 0) {
+                emptyMessage.style.display = 'none';
+            }
+
+            // Aggiungi le versioni alla lista
+            data.forEach(version => {
+                const listItem = document.createElement('li');
+                listItem.className = 'version-item';
+
+                listItem.innerHTML = `
+                    <div class="version-info">
+                        <strong>Version ${version.version}</strong> (Uploaded on ${new Date(version.date).toLocaleDateString()})
+                    </div>
+                    <a href="${version.link}" download class="download-btn">Download</a>
+                `;
+
+                versionList.appendChild(listItem);
             });
-            document.querySelector(`[onclick="loadVersions('${type}')"]`).classList.add('active');
+        })
+        .catch(error => {
+            console.error(`Error fetching ${type} versions:`, error);
+            document.getElementById('emptyMessage').textContent = `Failed to load ${type} versions.`;
+        });
+}
 
-            // Fetch delle versioni dal server per il tipo selezionato
-            fetch(`/${type}/all-versions`)
-                .then(response => response.json())
-                .then(data => {
-                    const versionList = document.getElementById('version-list');
-                    const emptyMessage = document.getElementById('emptyMessage');
-
-                    // Nascondi il messaggio se ci sono versioni
-                    if (data.length > 0) {
-                        emptyMessage.style.display = 'none';
-                    }
-
-                    // Aggiungi le versioni alla lista
-                    data.forEach(version => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'version-item';
-
-                        listItem.innerHTML = `
-                            <div class="version-info">
-                                <strong>Version ${version.version}</strong> (Uploaded on ${new Date(version.date).toLocaleDateString()})
-                            </div>
-                            <a href="${version.link}" download class="download-btn">Download</a>
-                        `;
-
-                        versionList.appendChild(listItem);
-                    });
-                })
-                .catch(error => {
-                    console.error(`Error fetching ${type} versions:`, error);
-                    document.getElementById('emptyMessage').textContent = `Failed to load ${type} versions.`;
-                });
-        }
-
-        // Carica le versioni del software al caricamento della pagina
-        loadVersions('software');
+// Ottieni il tipo di versione dalla query string e carica le versioni
+const type = getQueryParam('type') || 'software'; // Imposta 'software' come predefinito
+loadVersions(type);
     </script>
 
 </body>
