@@ -98,11 +98,6 @@
     <h1>All Versions</h1>
 
     <!-- Tabs per selezionare il tipo -->
-    <div class="tabs">
-        <button class="tab active" onclick="loadVersions('software')">Software</button>
-        <button class="tab" onclick="loadVersions('firmware')">Firmware</button>
-        <button class="tab" onclick="loadVersions('tool')">Tool</button>
-    </div>
 
     <!-- Lista delle versioni -->
     <ul class="version-list" id="version-list"></ul>
@@ -121,12 +116,6 @@ function loadVersions(type) {
     // Resetta lo stato della pagina
     document.getElementById('version-list').innerHTML = '';
     document.getElementById('emptyMessage').style.display = 'block';
-
-    // Aggiusta le classi active dei pulsanti
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelector(`[onclick="loadVersions('${type}')"]`).classList.add('active');
 
     // Fetch delle versioni dal server per il tipo selezionato
     fetch(`/api/${type}/all-versions`)
@@ -169,7 +158,6 @@ function loadVersions(type) {
 }
 
 // Ottieni il tipo di versione dalla query string e carica le versioni
-const type = getQueryParam('type') || 'software'; // Imposta 'software' come predefinito
 loadVersions(type);
     </script>
 
