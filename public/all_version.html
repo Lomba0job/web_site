@@ -126,7 +126,7 @@ function loadVersions(type) {
             return response.json();
         })
         .then(data => {
-            console.log(`All versions data for ${type}:`, data);  // Aggiungi questo log per controllare i dati ricevuti
+            console.log(`All versions data for ${type}:`, data);  // Log per controllare i dati ricevuti
 
             const versionList = document.getElementById('version-list');
             const emptyMessage = document.getElementById('emptyMessage');
@@ -158,6 +158,7 @@ function loadVersions(type) {
 }
 
 // Ottieni il tipo di versione dalla query string e carica le versioni
+const type = getQueryParam('type') || 'software';  // Imposta 'software' come valore predefinito se il parametro non è presente
 loadVersions(type);
     </script>
 
