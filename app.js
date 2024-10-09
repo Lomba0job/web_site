@@ -36,6 +36,7 @@ const toolRoutes = require('./routes/toolRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 // Utilizzo delle rotte
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/software', softwareRoutes);
 app.use('/firmware', firmwareRoutes);
 app.use('/tool', toolRoutes);

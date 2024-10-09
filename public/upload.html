@@ -72,28 +72,30 @@
     <p><a href="/logout">Logout</a></p>
 
     <script>
-        // Come prima, ma aggiungi il tipo al formData
         document.getElementById('uploadForm').addEventListener('submit', function (e) {
             e.preventDefault();
-
+    
+            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             const version = document.getElementById('versionInput').value;
             const type = document.getElementById('typeSelect').value;
-
+    
             if (file.size > 104857600) {
                 statusMessage.textContent = 'File is too large. Please upload a file smaller than 100MB.';
                 return;
             }
-
+    
             const formData = new FormData();
             formData.append('version', version);
             formData.append('file', file);
-
-            // Disabilita il pulsante e mostra il loader
+    
+            const submitButton = document.querySelector('button[type="submit"]');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const statusMessage = document.getElementById('statusMessage');
+    
             submitButton.disabled = true;
             loadingSpinner.style.display = 'inline-block';
-
-            // URL dinamico in base al tipo
+    
             fetch(`/${type}/upload`, {
                 method: 'POST',
                 body: formData
