@@ -29,19 +29,16 @@ function getMulterUpload(type) {
 }
 
 exports.uploadFile = (req, res, type) => {
-    console.log("Entering uploadFile function");  // Log per verificare l'ingresso nella funzione
     const upload = getMulterUpload(type).single('file');
 
     upload(req, res, (err) => {
         if (err) {
-            console.error('Errore durante l\'upload:', err);
-            return res.status(500).send('Errore durante l\'upload del file');
+            console.error('Errore durante upload:', err);
+            return res.status(500).send('Errore durante upload del file');
         }
 
-        console.log('File uploaded:', req.file);  // Log dopo il caricamento del file
-
+        // Verifica che il file e la versione siano presenti
         if (!req.file || !req.body.version) {
-            console.log('File or version is missing');
             return res.status(400).send('File o versione mancante');
         }
 
@@ -50,43 +47,42 @@ exports.uploadFile = (req, res, type) => {
         const newFilename = `${type}_v${version}${path.extname(originalName)}`;
         const newPath = path.join(req.file.destination, newFilename);
 
+        // Controlla se il file con la stessa versione esiste già
         if (fs.existsSync(newPath)) {
-            console.log(`Version already exists: ${newPath}`);
             fs.unlinkSync(req.file.path);
             return res.status(400).send('Una versione con questo numero esiste già. Usa un nuovo numero di versione.');
         }
 
+        // Rinomina il file
         fs.rename(req.file.path, newPath, (err) => {
             if (err) {
                 console.error('Errore durante la rinomina del file:', err);
                 return res.status(500).send('Errore durante il processamento del file');
             }
-
-            console.log('File renamed successfully');
-
+        
+            // Aggiorna version.json
             const versionFilePath = path.join(req.file.destination, 'version.json');
             let versionInfo = [];
             if (fs.existsSync(versionFilePath)) {
                 const data = fs.readFileSync(versionFilePath, 'utf-8');
                 versionInfo = data ? JSON.parse(data) : [];
             }
-
+        
             const newVersion = {
                 version: version,
                 link: `/uploads/${type}/${newFilename}`,
                 date: new Date().toISOString()
             };
-
+        
             versionInfo.push(newVersion);
-
+        
             fs.writeFile(versionFilePath, JSON.stringify(versionInfo, null, 2), (writeErr) => {
                 if (writeErr) {
                     console.error('Errore durante la scrittura di version.json:', writeErr);
                     return res.status(500).send('Errore durante la scrittura del file version.json');
+                } else {
+                    res.send('File caricato e versione aggiornata');
                 }
-
-                console.log('Version updated:', version);
-                res.send('File caricato e versione aggiornata');
             });
         });
     });

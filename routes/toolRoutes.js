@@ -20,8 +20,14 @@ router.get('/version', (req, res) => {
     uploadController.getLatestVersion(req, res, 'tool');
 });
 
-router.get('/all-versions', (req, res) => {
+// Rotta per ottenere i dati delle versioni in formato JSON (API)
+router.get('/api/all-versions', authMiddleware, (req, res) => {
     uploadController.getAllVersions(req, res, 'tool');
+});
+
+// Rotta per caricare la pagina all_version.html
+router.get('/all-versions', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/all_version.html'));
 });
 
 // Serve i file scaricabili
