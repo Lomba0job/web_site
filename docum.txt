@@ -1,5 +1,0 @@
-sudo touch /etc/authbind/byport/443
-sudo chmod 755 /etc/authbind/byport/443
-sudo chown lmb /etc/authbind/byport/443
-
-authbind --deep pm2 start backend/backend.js

@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload New Version</title>
+    <link rel="stylesheet" href="/assets/css/style_up.css">
+    <style>
+         /* Additional inline styling for the drag-and-drop area */
+    #dropZone {
+        width: 100%;
+        padding: 20px;
+        border: 2px dashed #ccc;
+        text-align: center;
+        cursor: pointer;
+    }
+    #dropZone.dragging {
+        background-color: #f0f0f0;
+        border-color: #999;
+    }
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+    /* Loading spinner */
+    .spinner {
+        display: none;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 3px solid #3498db;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+</head>
+<body>
+    <h1>Upload New Version</h1>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <!-- Selezione del tipo di file -->
+        <label for="typeSelect">Select the type of file to upload:</label>
+        <select id="typeSelect" name="type" required>
+            <option value="software">Software</option>
+            <option value="firmware">Firmware</option>
+            <option value="tool">Tool</option>
+        </select><br><br>
+
+        <!-- Resto del form come prima -->
+        <label for="fileInput">Select the new version file (.zip):</label>
+        <input type="file" id="fileInput" name="file" accept=".zip" required><br><br>
+
+        <!-- Drag-and-drop area -->
+        <div id="dropZone">
+            <p>Drag and drop your file here, or click to select a file</p>
+        </div><br><br>
+
+        <label for="versionInput">Enter the new version number:</label>
+        <input type="text" id="versionInput" name="version" placeholder="e.g., 2.6.0" required><br><br>
+
+        <button type="submit">Upload New Version</button>
+        <div class="spinner" id="loadingSpinner"></div>
+    </form>
+
+    <p id="statusMessage"></p>
+
+    <!-- Logout link -->
+    <p><a href="/logout">Logout</a></p>
+
+    <script>
+        // Come prima, ma aggiungi il tipo al formData
+        document.getElementById('uploadForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            const version = document.getElementById('versionInput').value;
+            const type = document.getElementById('typeSelect').value;
+
+            if (file.size > 104857600) {
+                statusMessage.textContent = 'File is too large. Please upload a file smaller than 100MB.';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('version', version);
+            formData.append('file', file);
+
+            // Disabilita il pulsante e mostra il loader
+            submitButton.disabled = true;
+            loadingSpinner.style.display = 'inline-block';
+
+            // URL dinamico in base al tipo
+            fetch(`/${type}/upload`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                statusMessage.textContent = 'Upload successful! Version updated.';
+                submitButton.disabled = false;
+                loadingSpinner.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                statusMessage.textContent = 'Failed to upload file.';
+                submitButton.disabled = false;
+                loadingSpinner.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>    
