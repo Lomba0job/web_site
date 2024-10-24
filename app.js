@@ -2,14 +2,12 @@
  * @file app.js
  * @description 
  * @author Lombardi Michele 
- * @copyright Nanolever 
  */
 
 // app.js
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
-const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
@@ -55,26 +53,13 @@ app.get('/:page', (req, res, next) => {
     });
 });
 
-// Server HTTPS
+// Opzioni SSL
 const sslOptions = {
     key: fs.readFileSync('/home/lmb/ssl/privkey.pem'),
     cert: fs.readFileSync('/home/lmb/ssl/fullchain.pem')
 };
 
-https.createServer(sslOptions, app).listen(443, () => {
-    console.log('Server HTTPS in ascolto sulla porta 443');
-});
-/*
-// Server HTTP per reindirizzare a HTTPS
-http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80, () => {
-    console.log('Server HTTP in ascolto sulla porta 80 e reindirizza a HTTPS');
-});
-*/
-
-// Imposta una porta non privilegiata (ad esempio, 3000)
+// Imposta il server HTTPS su una porta non privilegiata (ad esempio, 3000)
 const HTTPS_PORT = 3000;
 
 https.createServer(sslOptions, app).listen(HTTPS_PORT, () => {
