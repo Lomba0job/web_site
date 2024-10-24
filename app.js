@@ -61,14 +61,14 @@ app.use((err, req, res, next) => {
     res.status(500).send('Si è verificato un errore interno del server!');
 });
 // Opzioni SSL
-const sslOptions = {
-    key: fs.readFileSync('/home/lmb/ssl/privkey.pem'),
-    cert: fs.readFileSync('/home/lmb/ssl/fullchain.pem')
-};
+// const sslOptions = {
+//     key: fs.readFileSync('/home/lmb/ssl/privkey.pem'),
+//     cert: fs.readFileSync('/home/lmb/ssl/fullchain.pem')
+// };
 
-// Imposta il server HTTPS su una porta non privilegiata (ad esempio, 3000)
-const HTTPS_PORT = 3000;
+// Imposta il server HTTP su una porta non privilegiata (ad esempio, 3000)
+const HTTP_PORT = 3000;
 
-https.createServer(sslOptions, app).listen(HTTPS_PORT, () => {
-    console.log(`Server HTTPS in ascolto sulla porta ${HTTPS_PORT}`);
+app.listen(HTTP_PORT, () => {
+    console.log(`Server HTTP in ascolto sulla porta ${HTTP_PORT}`);
 });
