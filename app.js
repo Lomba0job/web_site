@@ -52,7 +52,14 @@ app.get('/:page', (req, res, next) => {
         }
     });
 });
+// Gestione del favicon.ico per evitare errori
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
+// Middleware per gestire gli errori
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Si è verificato un errore interno del server!');
+});
 // Opzioni SSL
 const sslOptions = {
     key: fs.readFileSync('/home/lmb/ssl/privkey.pem'),
