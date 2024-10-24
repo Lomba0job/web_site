@@ -64,11 +64,19 @@ const sslOptions = {
 https.createServer(sslOptions, app).listen(443, () => {
     console.log('Server HTTPS in ascolto sulla porta 443');
 });
-
+/*
 // Server HTTP per reindirizzare a HTTPS
 http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
 }).listen(80, () => {
     console.log('Server HTTP in ascolto sulla porta 80 e reindirizza a HTTPS');
+});
+*/
+
+// Imposta una porta non privilegiata (ad esempio, 3000)
+const HTTPS_PORT = 3000;
+
+https.createServer(sslOptions, app).listen(HTTPS_PORT, () => {
+    console.log(`Server HTTPS in ascolto sulla porta ${HTTPS_PORT}`);
 });
